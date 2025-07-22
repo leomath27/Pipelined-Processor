@@ -1,0 +1,33 @@
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+
+ENTITY eightBitAsyncReg IS
+    PORT(
+        i_d      : IN  STD_LOGIC_VECTOR(7 DOWNTO 0);
+        i_enable : IN  STD_LOGIC;
+        o_q      : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+        o_qBar   : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
+    );
+END eightBitAsyncReg;
+
+ARCHITECTURE structural OF eightBitAsyncReg IS
+    COMPONENT dLatch
+        PORT(
+            i_d      : IN  STD_LOGIC;
+            i_enable : IN  STD_LOGIC;
+            o_q      : OUT STD_LOGIC;
+            o_qBar   : OUT STD_LOGIC
+        );
+    END COMPONENT;
+
+BEGIN
+    GEN_REG: FOR i IN 0 TO 7 GENERATE
+        REG: dLatch
+            PORT MAP(
+                i_d      => i_d(i),
+                i_enable => i_enable,
+                o_q      => o_q(i),
+                o_qBar   => o_qBar(i)
+            );
+    END GENERATE GEN_REG;
+END structural;

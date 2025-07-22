@@ -1,0 +1,32 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity EdgeDetector is
+    Port (
+        din   : in  STD_LOGIC;  -- Input signal
+        dout  : out STD_LOGIC   -- Rising edge pulse output
+    );
+end EdgeDetector;
+
+architecture Structural of EdgeDetector is
+    -- Component for D Latch
+    component d_latch is
+        Port (
+            D  : in  STD_LOGIC;
+            EN : in  STD_LOGIC;
+            Q  : out STD_LOGIC
+        );
+    end component;
+
+    signal q1, q2 : STD_LOGIC;
+
+begin
+    -- First D Latch to store the input signal
+    Latch1: d_latch port map (D => din, EN => '1', Q => q1);
+    -- Second D Latch to store delayed version
+    Latch2: d_latch port map (D => q1, EN => '1', Q => q2);
+    
+    -- Detect rising edge (q1 was 1 while q2 was 0)
+    dout <= q1 and not q2;
+    
+end Structural;

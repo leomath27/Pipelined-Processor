@@ -1,0 +1,31 @@
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+
+ENTITY alu_control IS
+    PORT(
+        func     : IN  std_logic_vector(5 DOWNTO 0);  -- Function code (F5 to F0)
+        ALUOp    : IN  std_logic_vector(1 DOWNTO 0); -- ALU Operation code
+        operation: OUT std_logic_vector(2 DOWNTO 0)  -- ALU operation output
+    );
+END alu_control;
+
+ARCHITECTURE structural OF alu_control IS
+    SIGNAL not_f0, not_f1, not_f2, not_f3 : std_logic;
+    SIGNAL and1_out, and2_out, and3_out : std_logic;
+BEGIN
+    -- NOT Gates
+    not_f0 <= NOT func(0);
+    not_f1 <= NOT func(1);
+    not_f2 <= NOT func(2);
+    not_f3 <= NOT func(3);
+
+    -- AND Gates
+    and1_out <= not_f1 AND not_f0;
+    and2_out <= func(2) AND ALUOp(1);
+    and3_out <= func(3) AND ALUOp(1);
+    
+    -- OR Gates (Operations)
+    operation(0) <= and1_out OR and2_out;
+    operation(1) <= func(1) OR and3_out;
+    operation(2) <= func(3) OR func(2) AND ALUOp(1);
+END structural;
